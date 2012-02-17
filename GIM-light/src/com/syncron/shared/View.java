@@ -1,7 +1,5 @@
 package com.syncron.shared;
 
-import java.lang.reflect.Field;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.LocaleInfo;
@@ -72,9 +70,14 @@ public class View implements IsWidget {
 
 	private void createContent(VerticalPanel dialogContents) {
 		try {
-			Field[] fields = object.getClass().getDeclaredFields();
-			for (Field field : fields) {
-				Label label = new Label(field.getName() + ": " + field.get(object));
+			if (object.getClass() == Order.class) {
+				Order$Properties properties = new Order$Properties((Order) object);
+				for (String fieldName : properties.fieldNames()) {
+					Label label = new Label(fieldName + ": " + properties.get(fieldName));
+					dialogContents.add(label);
+				}
+			} else {
+				Label label = new Label(object.getClass().getName() + ": " + object.toString());
 				dialogContents.add(label);
 			}
 		} catch (Exception e) {
