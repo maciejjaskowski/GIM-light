@@ -10,6 +10,7 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.i18n.client.LocaleInfo;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTML;
@@ -21,6 +22,8 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.syncron.shared.FieldVerifier;
 import com.syncron.shared.Order;
+import com.syncron.shared.OrderRepository;
+import com.syncron.shared.OrderRepositoryAsync;
 import com.syncron.shared.View;
 
 /**
@@ -40,6 +43,8 @@ public class GIM_light implements EntryPoint {
 	 */
 	private final GreetingServiceAsync greetingService = GWT
 			.create(GreetingService.class);
+	
+	private final OrderRepositoryAsync orderRepository = new OrderRepository();
 
 	private DialogBox createDialogBox() {
 		// Create a dialog box and set the caption text
@@ -105,22 +110,48 @@ public class GIM_light implements EntryPoint {
 		RootPanel.get("nameFieldContainer").add(nameField);
 		RootPanel.get("sendButtonContainer").add(sendButton);
 		RootPanel.get("errorLabelContainer").add(errorLabel);
-		Image image = new Image(
+		Image anOrder = new Image(
 				"https://lh5.googleusercontent.com/-Np-sWQobFes/TsLBSTqJEII/AAAAAAAABw8/9-l_EdSi9tw/s720/DSC_0129.JPG");
-		RootPanel
-				.get()
-				.add(image);
-		final View view = new View(someOrder());
+
+		
+		
 		// final DialogBox dialogBox = createDialogBox();
 
-		image.addDoubleClickHandler(new DoubleClickHandler() {
+		anOrder.addDoubleClickHandler(new DoubleClickHandler() {
 
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
-				view.show();
+				new View(someOrder()).show();
 			}
 
 		});
+		
+		Image unconfirmedOrder =  new Image(
+				"https://lh5.googleusercontent.com/-Np-sWQobFes/TsLBSTqJEII/AAAAAAAABw8/9-l_EdSi9tw/s720/DSC_0129.JPG"); 
+		
+		unconfirmedOrder.addDoubleClickHandler(new DoubleClickHandler() {
+
+			@Override
+			public void onDoubleClick(DoubleClickEvent event) {
+				orderRepository.unconfirmed(new AsyncCallback<Order>() {
+					
+					@Override
+					public void onSuccess(Order result) {
+						new View(result).show();
+					}
+					
+					@Override
+					public void onFailure(Throwable caught) {
+						//ignore
+					}
+				});
+				
+			}
+
+		});
+		
+		RootPanel.get().add(anOrder);
+		RootPanel.get().add(unconfirmedOrder);
 
 		// Focus the cursor on the name field when the app loads
 		nameField.setFocus(true);
@@ -224,4 +255,6 @@ public class GIM_light implements EntryPoint {
 	private Order someOrder() {
 		return Order.specialOrder();
 	}
+	
+	
 }
