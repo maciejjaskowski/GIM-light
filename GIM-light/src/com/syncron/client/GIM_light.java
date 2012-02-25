@@ -110,29 +110,19 @@ public class GIM_light implements EntryPoint {
 		RootPanel.get("nameFieldContainer").add(nameField);
 		RootPanel.get("sendButtonContainer").add(sendButton);
 		RootPanel.get("errorLabelContainer").add(errorLabel);
-		Image anOrder = new Image(
-				"https://lh5.googleusercontent.com/-Np-sWQobFes/TsLBSTqJEII/AAAAAAAABw8/9-l_EdSi9tw/s720/DSC_0129.JPG");
-
-		
-		
-		// final DialogBox dialogBox = createDialogBox();
-
-		anOrder.addDoubleClickHandler(new DoubleClickHandler() {
+		Button anOrder = new Button("An Order", new ClickHandler() {
 
 			@Override
-			public void onDoubleClick(DoubleClickEvent event) {
+			public void onClick(ClickEvent event) {
 				new View(someOrder()).show();
 			}
 
 		});
 		
-		Image unconfirmedOrder =  new Image(
-				"https://lh5.googleusercontent.com/-Np-sWQobFes/TsLBSTqJEII/AAAAAAAABw8/9-l_EdSi9tw/s720/DSC_0129.JPG"); 
-		
-		unconfirmedOrder.addDoubleClickHandler(new DoubleClickHandler() {
+		Button unconfirmedOrder =  new Button("unconfirmed order",  new ClickHandler() {
 
 			@Override
-			public void onDoubleClick(DoubleClickEvent event) {
+			public void onClick(ClickEvent event) {
 				orderRepository.unconfirmed(new AsyncCallback<Order>() {
 					
 					@Override

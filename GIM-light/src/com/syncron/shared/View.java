@@ -2,7 +2,10 @@ package com.syncron.shared;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.i18n.client.LocaleInfo;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -23,7 +26,7 @@ public class View implements IsWidget {
 
 	private DialogBox createDialogBox() {
 		// Create a dialog box and set the caption text
-		final DialogBox dialogBox = new DialogBox();
+		final DialogBox dialogBox = new ClosableDialogBox();
 		dialogBox.ensureDebugId("cwDialogBox");
 		dialogBox.setText(object.toString());
 
@@ -39,6 +42,8 @@ public class View implements IsWidget {
 		// Add some text to the top of the dialog
 
 		createContent(dialogContents);
+		
+		createActions(dialogContents);
 
 
 		// Add an image to the dialog
@@ -85,6 +90,24 @@ public class View implements IsWidget {
 		}
 
 	}
+	
+	private void createActions(VerticalPanel dialogContents) {
+		if (object.getClass() == Order.class) {
+			final Order$Properties properties = new Order$Properties((Order) object);
+			for (final String actionName : properties.actions()) {
+				Button action = new Button(actionName, new ClickHandler() {
+					public void onClick(ClickEvent event) {
+						properties.action(actionName);
+					}
+				});
+				dialogContents.add(action);
+			}
+		} else {
+			Label label = new Label(object.getClass().getName() + ": " + object.toString());
+			dialogContents.add(label);
+		}
+		
+	}
 
 	@Override
 	public Widget asWidget() {
@@ -94,6 +117,20 @@ public class View implements IsWidget {
 	public void show() {
 		dialogBox.center();
 		dialogBox.show();
+	}
+	
+	class ClosableDialogBox extends DialogBox {
+		@Override
+	    protected void onPreviewNativeEvent(NativePreviewEvent event) {
+	        super.onPreviewNativeEvent(event);
+	        switch (event.getTypeInt()) {
+	            case Event.ONKEYDOWN:
+	                if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ESCAPE) {
+	                    hide();
+	                }
+	                break;
+	        }
+	    }
 	}
 
 }
