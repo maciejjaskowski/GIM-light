@@ -1,8 +1,7 @@
 package com.syncron.shared;
 
-import static com.syncron.shared.Order.Status.NEW;
 import static com.syncron.shared.Order.Status.CONFIRMED;
-import static com.syncron.shared.Order.Status.REJECTED;
+import static com.syncron.shared.Order.Status.NEW;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -36,6 +35,10 @@ public class Order {
 		this.lines = Arrays.asList(lines);
 	}
 	
+	public boolean is(Status status) {
+		return this.status == status; 
+	}
+	
 	public void confirm() {
 		this.status = CONFIRMED;
 	}
@@ -50,17 +53,17 @@ public class Order {
 	public static List<Order> orders() {		
 		Order[] orders = new Order[] {
 		Order.create("1").at(new Date()).to(new Address("Świętokrzyska 36/36-37"))
-			.status(NEW)
+			.is(NEW)
 			.consistingOf(new OrderLine(new Item(), new BigDecimal("3.26"), 1),
 						new OrderLine(new Item(), new BigDecimal("1.27"), 5),
 						new OrderLine(new Item(), new BigDecimal("7.28"), 6)).write()
 		,Order.create("2").at(new Date()).to(new Address("Świętokrzyska 36/36-37"))
-			.status(NEW)
+			.is(NEW)
 			.consistingOf(new OrderLine(new Item(), new BigDecimal("9.26"), 1),
 						new OrderLine(new Item(), new BigDecimal("11.27"), 5),
 						new OrderLine(new Item(), new BigDecimal("13.28"), 6)).write()
 		,Order.create("3").at(new Date()).to(new Address("Świętokrzyska 36/36-37"))
-			.status(NEW)
+			.is(NEW)
 			.consistingOf(new OrderLine(new Item(), new BigDecimal("15.26"), 1),
 						new OrderLine(new Item(), new BigDecimal("17.27"), 5),
 						new OrderLine(new Item(), new BigDecimal("19.28"), 6)).write()
@@ -92,7 +95,7 @@ public class Order {
 			return this;
 		}
 
-		public OrderBuilder status(Status status) {
+		public OrderBuilder is(Status status) {
 			builded.status = status;
 			return this;
 		}
@@ -108,4 +111,6 @@ public class Order {
 		}
 		
 	}
+
+
 }

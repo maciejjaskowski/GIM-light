@@ -1,19 +1,27 @@
 package com.syncron.shared;
 
 import java.util.EmptyStackException;
-import java.util.List;
+import java.util.LinkedList;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import static com.syncron.shared.Order.Status.*;
 
 
 public class OrderRepository implements OrderRepositoryAsync {
 
-	List<Order> all = Order.orders();
+	LinkedList<Order> all = new LinkedList<Order>(Order.orders());
 	@Override
 	public void unconfirmed(AsyncCallback<Order> callback) {
-		if (all.isEmpty()) {
-			callback.onFailure(new EmptyStackException());
+		
+		while (!all.isEmpty()) {
+			Order top = all.get(0);
+			all.remove(0);
+			if (top.is(NEW)) {
+				callback.onSuccess(top);
+				return;
+			}
 		}
-		callback.onSuccess(all.get(0));
+		callback.onFailure(new EmptyStackException());
+		 
 	}
 }
