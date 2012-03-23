@@ -15,17 +15,17 @@ public class Order$Properties {
 		return Arrays.asList("orderNumber", "date", "buyerAddress", "status", "lines");
 	}
 
-	public String get(String fieldName) {
+	public Object get(String fieldName) {
 		if ("orderNumber".equals(fieldName)) {
-			return object.number.toString();
+			return object.number;
 		} else if ("date".equals(fieldName)) {
-			return object.date.toString();
+			return object.date;
 		} else if ("buyerAddress".equals(fieldName)) {
-			return object.buyerAddress.toString();
+			return object.buyerAddress;
 		} else if ("lines".equals(fieldName)) {
-			return object.lines.toString();
+			return object.lines;
 		} else if ("status".equals(fieldName)) {
-			return object.status.toString();
+			return object.status;
 		}
 		throw new IllegalArgumentException();
 	}

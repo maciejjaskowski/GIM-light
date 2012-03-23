@@ -21,7 +21,6 @@ public class OrderRepository implements OrderRepositoryAsync {
 				return;
 			}
 		}
-		callback.onFailure(new EmptyStackException());
-		 
+		callback.onFailure(new EmptyStackException());	 
 	}
 }

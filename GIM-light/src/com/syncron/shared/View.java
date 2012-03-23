@@ -1,5 +1,7 @@
 package com.syncron.shared;
 
+import java.util.Collection;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -78,9 +80,12 @@ public class View implements IsWidget {
 			if (object.getClass() == Order.class) {
 				Order$Properties properties = new Order$Properties((Order) object);
 				for (String fieldName : properties.fieldNames()) {
-					Label label = new Label(fieldName + ": " + properties.get(fieldName));
-					dialogContents.add(label);
-				}
+					if (properties.get(fieldName) instanceof Collection){
+						dialogContents.add(new EmbeddedListView(fieldName, (Collection<?>) properties.get(fieldName)));
+					} else {
+						dialogContents.add(new Label(fieldName + ": " + properties.get(fieldName)));
+					}
+				}				
 			} else {
 				Label label = new Label(object.getClass().getName() + ": " + object.toString());
 				dialogContents.add(label);
@@ -94,6 +99,7 @@ public class View implements IsWidget {
 	private void createActions(VerticalPanel dialogContents) {
 		if (object.getClass() == Order.class) {
 			final Order$Properties properties = new Order$Properties((Order) object);
+			
 			for (final String actionName : properties.actions()) {
 				Button action = new Button(actionName, new ClickHandler() {
 					public void onClick(ClickEvent event) {
@@ -102,6 +108,7 @@ public class View implements IsWidget {
 				});
 				dialogContents.add(action);
 			}
+			
 		} else {
 			Label label = new Label(object.getClass().getName() + ": " + object.toString());
 			dialogContents.add(label);
