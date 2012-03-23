@@ -15,10 +15,12 @@ public class OrderRepository implements OrderRepositoryAsync {
 		
 		while (!all.isEmpty()) {
 			Order top = all.get(0);
-			all.remove(0);
+			
 			if (top.is(NEW)) {
 				callback.onSuccess(top);
 				return;
+			} else {
+				all.remove(0);
 			}
 		}
 		callback.onFailure(new EmptyStackException());	 

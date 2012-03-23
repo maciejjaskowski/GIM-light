@@ -3,7 +3,7 @@ package com.syncron.shared;
 import java.util.Arrays;
 import java.util.List;
 
-public class Order$Properties {
+public class Order$Properties implements ReflectsObject {
 
 	private final Order object;
 
@@ -11,10 +11,12 @@ public class Order$Properties {
 		this.object = object;
 	}
 
+	@Override
 	public List<String> fieldNames() {
 		return Arrays.asList("orderNumber", "date", "buyerAddress", "status", "lines");
 	}
 
+	@Override
 	public Object get(String fieldName) {
 		if ("orderNumber".equals(fieldName)) {
 			return object.number;
@@ -30,10 +32,12 @@ public class Order$Properties {
 		throw new IllegalArgumentException();
 	}
 	
+	@Override
 	public List<String> actions() {
 		return Arrays.asList("confirm");
 	}
 
+	@Override
 	public void action(String actionName) {
 		if ("confirm".equals(actionName)) {
 			object.confirm();

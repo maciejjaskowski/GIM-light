@@ -78,14 +78,11 @@ public class View implements IsWidget {
 	private void createContent(VerticalPanel dialogContents) {
 		try {
 			if (object.getClass() == Order.class) {
-				Order$Properties properties = new Order$Properties((Order) object);
-				for (String fieldName : properties.fieldNames()) {
-					if (properties.get(fieldName) instanceof Collection){
-						dialogContents.add(new EmbeddedListView(fieldName, (Collection<?>) properties.get(fieldName)));
-					} else {
-						dialogContents.add(new Label(fieldName + ": " + properties.get(fieldName)));
-					}
-				}				
+				ReflectsObject properties = new Order$Properties((Order) object);
+				createContent2(dialogContents, properties);				
+			} else if (object.getClass() == OrderLine.class) {
+				ReflectsObject properties = new OrderLine$Properties((OrderLine) object);
+				createContent2(dialogContents, properties);
 			} else {
 				Label label = new Label(object.getClass().getName() + ": " + object.toString());
 				dialogContents.add(label);
@@ -95,10 +92,21 @@ public class View implements IsWidget {
 		}
 
 	}
+
+	private void createContent2(VerticalPanel dialogContents,
+			ReflectsObject properties) {
+		for (String fieldName : properties.fieldNames()) {
+			if (properties.get(fieldName) instanceof Collection){
+				dialogContents.add(new EmbeddedListView(fieldName, (Collection<?>) properties.get(fieldName)));
+			} else {
+				dialogContents.add(new Label(fieldName + ": " + properties.get(fieldName)));
+			}
+		}
+	}
 	
 	private void createActions(VerticalPanel dialogContents) {
 		if (object.getClass() == Order.class) {
-			final Order$Properties properties = new Order$Properties((Order) object);
+			final ReflectsObject properties = new Order$Properties((Order) object);
 			
 			for (final String actionName : properties.actions()) {
 				Button action = new Button(actionName, new ClickHandler() {
@@ -110,8 +118,6 @@ public class View implements IsWidget {
 			}
 			
 		} else {
-			Label label = new Label(object.getClass().getName() + ": " + object.toString());
-			dialogContents.add(label);
 		}
 		
 	}
