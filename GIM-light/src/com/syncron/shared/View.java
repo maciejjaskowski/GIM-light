@@ -1,5 +1,6 @@
 package com.syncron.shared;
 
+import java.lang.reflect.Constructor;
 import java.util.Collection;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -11,8 +12,10 @@ import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -79,10 +82,10 @@ public class View implements IsWidget {
 		try {
 			if (object.getClass() == Order.class) {
 				ReflectsObject properties = new Order$Properties((Order) object);
-				createContent2(dialogContents, properties);				
+				addPropertiesTo(dialogContents, properties);				
 			} else if (object.getClass() == OrderLine.class) {
 				ReflectsObject properties = new OrderLine$Properties((OrderLine) object);
-				createContent2(dialogContents, properties);
+				addPropertiesTo(dialogContents, properties);
 			} else {
 				Label label = new Label(object.getClass().getName() + ": " + object.toString());
 				dialogContents.add(label);
@@ -93,13 +96,22 @@ public class View implements IsWidget {
 
 	}
 
-	private void createContent2(VerticalPanel dialogContents,
+	private void addPropertiesTo(VerticalPanel dialogContents,
 			ReflectsObject properties) {
 		for (String fieldName : properties.fieldNames()) {
 			if (properties.get(fieldName) instanceof Collection){
 				dialogContents.add(new EmbeddedListView(fieldName, (Collection<?>) properties.get(fieldName)));
 			} else {
-				dialogContents.add(new Label(fieldName + ": " + properties.get(fieldName)));
+				Label label = new Label(fieldName + ": ");
+				
+				TextBox textBox = new TextBox();
+				textBox.setText(properties.get(fieldName).toString());
+				textBox.setEnabled(true);
+				textBox.setReadOnly(true);
+				HorizontalPanel horizontalPanel = new HorizontalPanel();
+				horizontalPanel.add(label);
+				horizontalPanel.add(textBox);
+				dialogContents.add(horizontalPanel); 
 			}
 		}
 	}
