@@ -41,6 +41,7 @@ public class Order implements IsSerializable {
 		return this.status == status; 
 	}
 	
+	@Action
 	public void confirm() {
 		this.status = CONFIRMED;
 	}
