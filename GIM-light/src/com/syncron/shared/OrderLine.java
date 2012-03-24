@@ -21,4 +21,9 @@ public class OrderLine implements Model {
 	public String toString() {
 		return item.toString() + " x " + quantity;
 	}
+	
+	@Override
+	public ReflectsObject getProperties() {
+		return new OrderLine$Properties(this);
+	}
 }

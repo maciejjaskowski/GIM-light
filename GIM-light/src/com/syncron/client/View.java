@@ -17,6 +17,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.syncron.shared.Model;
 import com.syncron.shared.Order;
 import com.syncron.shared.Order$Properties;
 import com.syncron.shared.OrderLine;
@@ -84,12 +85,9 @@ public class View implements IsWidget {
 
 	private void createContent(VerticalPanel dialogContents) {
 		try {
-			if (object.getClass() == Order.class) {
-				ReflectsObject properties = new Order$Properties((Order) object);
+			if (object instanceof Model) {
+				ReflectsObject properties = ((Model) object).getProperties();
 				addPropertiesTo(dialogContents, properties);				
-			} else if (object.getClass() == OrderLine.class) {
-				ReflectsObject properties = new OrderLine$Properties((OrderLine) object);
-				addPropertiesTo(dialogContents, properties);
 			} else {
 				Label label = new Label(object.getClass().getName() + ": " + object.toString());
 				dialogContents.add(label);
@@ -113,8 +111,8 @@ public class View implements IsWidget {
 	}
 	
 	private void createActions(VerticalPanel dialogContents) {
-		if (object.getClass() == Order.class) {
-			final ReflectsObject properties = new Order$Properties((Order) object);
+		if (object instanceof Model) {
+			final ReflectsObject properties = ((Model) object).getProperties();
 			
 			for (final String actionName : properties.actions()) {
 				Button action = new Button(actionName, new ClickHandler() {

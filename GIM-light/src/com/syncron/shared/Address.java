@@ -15,4 +15,9 @@ public class Address implements Model {
 	public String toString() {
 		return address;
 	}
+
+	@Override
+	public ReflectsObject getProperties() {
+		return new Address$Properties(this);
+	}
 }

@@ -117,6 +117,10 @@ public class Order implements Model {
 	public String toString() {
 		return this.number;
 	}
-
+	
+	@Override
+	public ReflectsObject getProperties() {
+		return new Order$Properties(this);
+	}
 
 }

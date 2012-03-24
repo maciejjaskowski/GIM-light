@@ -16,4 +16,9 @@ public class Item implements Model {
 	public String toString() {
 		return name;
 	}
+	
+	@Override
+	public ReflectsObject getProperties() {
+		return new Item$Properties(this);
+	}
 }
