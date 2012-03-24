@@ -6,6 +6,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Field;
@@ -66,9 +67,9 @@ public class PropertyObjectGenerator2 {
 		writer.indent();
 			generateConstructor(writer);
 			writer.println("");
-			generateGet(writer);
-			writer.println("");
 			generateFieldNames(writer);
+			writer.println("");
+			generateGet(writer);
 			writer.println("");
 			generateActions(writer);
 			writer.println("");
@@ -124,6 +125,10 @@ public class PropertyObjectGenerator2 {
 	}
 
 	private void generateHeader(SourceWriter writer) {
+		writer.println("package " + packageName + ";");
+		writer.println("import java.util.Arrays;");
+		writer.println("import java.util.List;");
+		writer.println("");
 		writer.println("public class " + typeName + " implements ReflectsObject {");
 	}
 
@@ -136,8 +141,8 @@ public class PropertyObjectGenerator2 {
 	 *            Source writer to output source code
 	 */
 	private void generateConstructor(SourceWriter sourceWriter) {
-		sourceWriter.println("private final " + className() + " object;");
-		sourceWriter.println("public " + typeName + "(" + className() + " object) { ");
+		sourceWriter.println("private final " + type.getSimpleName() + " object;");
+		sourceWriter.println("public " + typeName + "(" + type.getSimpleName() + " object) { ");
 		sourceWriter.indent();
 
 			sourceWriter.println("super();");
@@ -147,12 +152,8 @@ public class PropertyObjectGenerator2 {
 		sourceWriter.println("}");
 	}
 
-	private String className() {
-		return Order.class.getName();
-	}
-
 	private void generateFieldNames(SourceWriter sourceWriter) {
-		sourceWriter.println("public List<String> fieldNames() {");
+		sourceWriter.println("@Override public List<String> fieldNames() {");
 		sourceWriter.indent();
 
 		sourceWriter.print("return Arrays.asList(");
@@ -174,7 +175,7 @@ public class PropertyObjectGenerator2 {
 	}
 
 	private void generateGet(SourceWriter sourceWriter) {
-		sourceWriter.println("public Object get(String fieldName) {");
+		sourceWriter.println("@Override public Object get(String fieldName) {");
 		sourceWriter.indent();
 
 		Field[] declaredFields = type.getDeclaredFields();
@@ -183,12 +184,13 @@ public class PropertyObjectGenerator2 {
 		sourceWriter.println("if (0 == 1) {");
 		while (iterator.hasNext()) {
 			String name = iterator.next();
-			sourceWriter.println("} else if (\"" + name + "\".equals(" + name + ")) {");
+			sourceWriter.println("} else if (\"" + name + "\".equals(fieldName)) {");
 			sourceWriter.indent();
 				sourceWriter.println("return object." + name + ";");
 			sourceWriter.outdent();
 		}
 		sourceWriter.println("}");
+		sourceWriter.println("throw new IllegalArgumentException();");
 		sourceWriter.outdent();
 		sourceWriter.println("};");
 	}
@@ -217,7 +219,9 @@ public class PropertyObjectGenerator2 {
 		
 		for (Class<?> type : names) {
 			PropertyObjectGenerator2 generator = new PropertyObjectGenerator2(type);
-			System.out.println(generator.getResult());
+			FileWriter fileWriter = new FileWriter(new File(dir.getAbsolutePath() + "/" + type.getSimpleName() + "$Properties.java"));
+			fileWriter.write(generator.getResult());
+			fileWriter.close();
 		}
 		
 	}

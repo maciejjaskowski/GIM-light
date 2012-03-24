@@ -2,25 +2,21 @@ package com.syncron.shared;
 import java.util.Arrays;
 import java.util.List;
 
-public class OrderLine$Properties implements ReflectsObject {
-  private final OrderLine object;
-  public OrderLine$Properties(OrderLine object) { 
+public class Address$Properties implements ReflectsObject {
+  private final Address object;
+  public Address$Properties(Address object) { 
     super();
     this.object = object;
   }
   
   @Override public List<String> fieldNames() {
-    return Arrays.asList("item", "quantity", "price");
+    return Arrays.asList("address");
   }
   
   @Override public Object get(String fieldName) {
     if (0 == 1) {
-    } else if ("item".equals(fieldName)) {
-      return object.item;
-    } else if ("quantity".equals(fieldName)) {
-      return object.quantity;
-    } else if ("price".equals(fieldName)) {
-      return object.price;
+    } else if ("address".equals(fieldName)) {
+      return object.address;
     }
     throw new IllegalArgumentException();
   };
