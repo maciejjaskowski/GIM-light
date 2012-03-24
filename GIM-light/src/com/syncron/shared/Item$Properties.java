@@ -21,7 +21,7 @@ public class Item$Properties implements ReflectsObject {
       return object.code;
     }
     throw new IllegalArgumentException();
-  };
+  }
   
   @Override public List<String> actions() {
     return Arrays.asList();

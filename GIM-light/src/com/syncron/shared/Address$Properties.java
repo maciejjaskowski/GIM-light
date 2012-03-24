@@ -19,7 +19,7 @@ public class Address$Properties implements ReflectsObject {
       return object.address;
     }
     throw new IllegalArgumentException();
-  };
+  }
   
   @Override public List<String> actions() {
     return Arrays.asList();

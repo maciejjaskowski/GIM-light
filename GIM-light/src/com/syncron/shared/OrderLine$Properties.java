@@ -23,7 +23,7 @@ public class OrderLine$Properties implements ReflectsObject {
       return object.price;
     }
     throw new IllegalArgumentException();
-  };
+  }
   
   @Override public List<String> actions() {
     return Arrays.asList();

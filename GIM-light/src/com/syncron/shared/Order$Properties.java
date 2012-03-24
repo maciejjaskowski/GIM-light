@@ -27,7 +27,7 @@ public class Order$Properties implements ReflectsObject {
       return object.lines;
     }
     throw new IllegalArgumentException();
-  };
+  }
   
   @Override public List<String> actions() {
     return Arrays.asList("confirm");
@@ -36,7 +36,7 @@ public class Order$Properties implements ReflectsObject {
   @Override public void action(String actionName) {
     if ("confirm".equals(actionName)) {
       object.confirm();
-      return;
+      return ;
     }
     throw new IllegalArgumentException();
   }

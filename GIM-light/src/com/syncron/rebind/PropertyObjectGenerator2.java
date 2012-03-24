@@ -1,10 +1,8 @@
 package com.syncron.rebind;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -17,7 +15,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.syncron.shared.Action;
-import com.syncron.shared.Order;
 
 public class PropertyObjectGenerator2 {
 	private final String typeName;
@@ -64,7 +61,6 @@ public class PropertyObjectGenerator2 {
 		SourceWriter writer = new SourceWriter(new OutputStreamWriter(byteArrayOutputStream));
 		
 		generateHeader(writer);
-		writer.indent();
 			generateConstructor(writer);
 			writer.println("");
 			generateFieldNames(writer);
@@ -74,42 +70,35 @@ public class PropertyObjectGenerator2 {
 			generateActions(writer);
 			writer.println("");
 			generateAction(writer);
-		writer.outdent();
-		writer.println("}");
+		writer.closeBlock();
 		
 		return writer.toString();
 	}
 
 
 	private void generateAction(SourceWriter writer) {
-		writer.println("@Override public void action(String actionName) {");
-		writer.indent();
+		writer.openBlock("@Override public void action(String actionName)");
 		
 		for (String actionName : getActionNames()) {
-			writer.println("if (\"" + actionName + "\".equals(actionName)) {");
-			writer.indent();
+			writer.openBlock("if (\"" + actionName + "\".equals(actionName))");
 				writer.println("object." + actionName + "();");
-				writer.println("return;");
-			writer.outdent();
-			writer.println("}");
+				writer.doReturn("");
+			writer.closeBlock();
 		}
 			
 		writer.println("throw new IllegalArgumentException();");
-		writer.outdent();
-		writer.println("}");
+		writer.closeBlock();
 		
 	}
 
 	private void generateActions(SourceWriter writer) {
-		writer.println("@Override public List<String> actions() {");
-		writer.indent();
+		writer.openBlock("@Override public List<String> actions()");
 		
 		writer.print("return Arrays.asList(");
 		Iterator<String> iterator = getActionNames().iterator();
 		writer.printList(iterator);
 		writer.println(");");
-		writer.outdent();
-		writer.println("}");
+		writer.closeBlock();
 	}
 
 	private Iterable<String> getActionNames() {
@@ -129,7 +118,7 @@ public class PropertyObjectGenerator2 {
 		writer.println("import java.util.Arrays;");
 		writer.println("import java.util.List;");
 		writer.println("");
-		writer.println("public class " + typeName + " implements ReflectsObject {");
+		writer.openBlock("public class " + typeName + " implements ReflectsObject");
 	}
 
 	/**
@@ -148,21 +137,18 @@ public class PropertyObjectGenerator2 {
 			sourceWriter.println("super();");
 			sourceWriter.println("this.object = object;");
 
-		sourceWriter.outdent();
-		sourceWriter.println("}");
+		sourceWriter.closeBlock();
 	}
 
 	private void generateFieldNames(SourceWriter sourceWriter) {
-		sourceWriter.println("@Override public List<String> fieldNames() {");
-		sourceWriter.indent();
+		sourceWriter.openBlock("@Override public List<String> fieldNames()");
 
 		sourceWriter.print("return Arrays.asList(");
 
 		sourceWriter.printList(getProperties(type.getDeclaredFields()));
 
 		sourceWriter.println(");");
-		sourceWriter.outdent();
-		sourceWriter.println("}");
+		sourceWriter.closeBlock();
 	}
 
 	private List<String> getProperties(Field[] declaredFields) {
@@ -175,8 +161,7 @@ public class PropertyObjectGenerator2 {
 	}
 
 	private void generateGet(SourceWriter sourceWriter) {
-		sourceWriter.println("@Override public Object get(String fieldName) {");
-		sourceWriter.indent();
+		sourceWriter.openBlock("@Override public Object get(String fieldName)");
 
 		Field[] declaredFields = type.getDeclaredFields();
 
@@ -186,13 +171,12 @@ public class PropertyObjectGenerator2 {
 			String name = iterator.next();
 			sourceWriter.println("} else if (\"" + name + "\".equals(fieldName)) {");
 			sourceWriter.indent();
-				sourceWriter.println("return object." + name + ";");
+				sourceWriter.doReturn("object." + name);
 			sourceWriter.outdent();
 		}
 		sourceWriter.println("}");
 		sourceWriter.println("throw new IllegalArgumentException();");
-		sourceWriter.outdent();
-		sourceWriter.println("};");
+		sourceWriter.closeBlock();
 	}
 	
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
@@ -235,6 +219,20 @@ class SourceWriter {
 	private boolean newLine = true;
 
 	public SourceWriter(OutputStreamWriter outputStreamWriter) {
+	}
+
+	public void openBlock(String string) {
+		println(string + " {");
+		indent();
+	}
+
+	public void doReturn(String string) {
+		println("return " + string + ";");
+	}
+
+	public void closeBlock() {
+		outdent();
+		println("}");		
 	}
 
 	public void print(String string) {
