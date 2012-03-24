@@ -38,6 +38,10 @@ class SourceWriter {
 	public void indent() {
 		indent  += "  ";
 	}
+	
+	public void println() {
+		println("");
+	}
 
 	public void println(String string) {
 		try {

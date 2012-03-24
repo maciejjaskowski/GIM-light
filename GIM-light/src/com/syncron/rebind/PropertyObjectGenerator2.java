@@ -31,9 +31,7 @@ public class PropertyObjectGenerator2 {
 		this.type = type;
 		this.typeName = type.getSimpleName() + suffix;
 		this.packageName = type.getPackage().getName();
-			// Generate class source code
 		this.result = generateClass();
-		
 	}
 	
 	public String getResult() {
@@ -63,13 +61,13 @@ public class PropertyObjectGenerator2 {
 		
 		generateHeader(writer);
 			generateConstructor(writer);
-			writer.println("");
+			writer.println();
 			generateFieldNames(writer);
-			writer.println("");
+			writer.println();
 			generateGet(writer);
-			writer.println("");
+			writer.println();
 			generateActions(writer);
-			writer.println("");
+			writer.println();
 			generateAction(writer);
 		writer.closeBlock();
 		
@@ -118,7 +116,7 @@ public class PropertyObjectGenerator2 {
 		writer.println("package " + packageName + ";");
 		writer.println("import java.util.Arrays;");
 		writer.println("import java.util.List;");
-		writer.println("");
+		writer.println();
 		writer.openBlock("public class " + typeName + " implements ReflectsObject");
 	}
 
@@ -132,8 +130,7 @@ public class PropertyObjectGenerator2 {
 	 */
 	private void generateConstructor(SourceWriter sourceWriter) {
 		sourceWriter.println("private final " + type.getSimpleName() + " object;");
-		sourceWriter.println("public " + typeName + "(" + type.getSimpleName() + " object) { ");
-		sourceWriter.indent();
+		sourceWriter.openBlock("public " + typeName + "(" + type.getSimpleName() + " object)");
 
 			sourceWriter.println("super();");
 			sourceWriter.println("this.object = object;");
