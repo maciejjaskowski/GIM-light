@@ -1,6 +1,11 @@
 package com.syncron.rebind;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Field;
@@ -14,20 +19,34 @@ import com.syncron.shared.Action;
 import com.syncron.shared.Order;
 
 public class PropertyObjectGenerator2 {
-	private String typeName = null;
-	private String packageName = null;
-	private Class<?> type;
+	private final String typeName;
+	private final String packageName;
+	private final Class<?> type;
+	private final String result;
 
-	// inherited generator method
-	public String generate(Class<?> type) {
+	public PropertyObjectGenerator2(String typeName) throws ClassNotFoundException {
+		this(Class.forName(typeName));
+	}
+	
+	public PropertyObjectGenerator2(Class<?> type) {
 		this.type = type;
 		this.typeName = type.getSimpleName() + "$Properties";
 		this.packageName = type.getPackage().getName();
 			// Generate class source code
-		generateClass();
+		this.result = generateClass();
 		
-		// return the fully qualifed name of the class generated
-		return packageName + "." + typeName;
+	}
+	
+	public String getResult() {
+		return result;
+	}
+	
+	public String getPackageName() {
+		return packageName;
+	}
+	
+	public String getTypeName() {
+		return typeName;
 	}
 
 	/**
@@ -38,7 +57,7 @@ public class PropertyObjectGenerator2 {
 	 * @param context
 	 *            Generator context
 	 */
-	private void generateClass() {
+	private String generateClass() {
 		// get print writer that receives the source code
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		SourceWriter writer = new SourceWriter(new OutputStreamWriter(byteArrayOutputStream));
@@ -57,7 +76,7 @@ public class PropertyObjectGenerator2 {
 		writer.outdent();
 		writer.println("}");
 		
-		System.out.println(writer);
+		return writer.toString();
 	}
 
 
@@ -174,8 +193,33 @@ public class PropertyObjectGenerator2 {
 		sourceWriter.println("};");
 	}
 	
-	public static void main(String[] args) {
-		new PropertyObjectGenerator2().generate(Order.class);
+	public static void main(String[] args) throws IOException, ClassNotFoundException {
+		File dir = new File("src/com/syncron/shared/");
+		System.out.println(Arrays.toString(dir.list()));
+		System.out.println(dir.getAbsolutePath());
+		
+		ArrayList<Class<?>> names = new ArrayList<Class<?>>(); 
+		for (String fileName : dir.list()) {
+			File file = new File(dir + "/" + fileName);
+			
+			BufferedReader fileReader = new BufferedReader(new FileReader(file));
+			String line = "";
+			while((line = fileReader.readLine()) != null) {
+				if (line.contains("implements Model")) {
+					String string = "com.syncron.shared." + fileName.substring(0, fileName.length() - 5);
+					Class<?> type = Class.forName(string);
+					names.add(type);
+					System.out.println(type.getCanonicalName());
+					break;
+				}
+			}
+		}
+		
+		for (Class<?> type : names) {
+			PropertyObjectGenerator2 generator = new PropertyObjectGenerator2(type);
+			System.out.println(generator.getResult());
+		}
+		
 	}
 
 }

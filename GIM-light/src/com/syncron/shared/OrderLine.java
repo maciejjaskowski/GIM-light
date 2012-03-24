@@ -2,9 +2,7 @@ package com.syncron.shared;
 
 import java.math.BigDecimal;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
-public class OrderLine implements IsSerializable {
+public class OrderLine implements Model {
 
 	Item item;
 	int quantity;

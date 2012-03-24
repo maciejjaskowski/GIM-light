@@ -8,9 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
-public class Order implements IsSerializable {
+public class Order implements Model {
 
 	public static enum Status {
 		NEW,

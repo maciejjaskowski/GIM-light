@@ -1,8 +1,7 @@
 package com.syncron.shared;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class Address implements IsSerializable {
+public class Address implements Model {
 	
 	public Address() { }
 
