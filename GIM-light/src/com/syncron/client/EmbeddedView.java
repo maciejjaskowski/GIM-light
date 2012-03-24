@@ -1,4 +1,4 @@
-package com.syncron.shared;
+package com.syncron.client;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;

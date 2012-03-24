@@ -1,6 +1,5 @@
-package com.syncron.shared;
+package com.syncron.client;
 
-import java.lang.reflect.Constructor;
 import java.util.Collection;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -18,6 +17,11 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.syncron.shared.Order;
+import com.syncron.shared.Order$Properties;
+import com.syncron.shared.OrderLine;
+import com.syncron.shared.OrderLine$Properties;
+import com.syncron.shared.ReflectsObject;
 
 public class View implements IsWidget {
 

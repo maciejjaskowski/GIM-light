@@ -1,4 +1,4 @@
-package com.syncron.shared;
+package com.syncron.client;
 
 import java.util.Collection;
 

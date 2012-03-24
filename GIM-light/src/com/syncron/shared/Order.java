@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-public class Order {
+
+import com.google.gwt.user.client.rpc.IsSerializable;
+public class Order implements IsSerializable {
 
 	public static enum Status {
 		NEW,
@@ -96,7 +98,7 @@ public class Order {
 		}
 
 		public OrderBuilder is(Status status) {
-			builded.status = status;
+			builded.status = status; 
 			return this;
 		}
 

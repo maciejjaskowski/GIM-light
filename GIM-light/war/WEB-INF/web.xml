@@ -10,10 +10,18 @@
     <servlet-name>greetServlet</servlet-name>
     <servlet-class>com.syncron.server.GreetingServiceImpl</servlet-class>
   </servlet>
-  
   <servlet-mapping>
     <servlet-name>greetServlet</servlet-name>
     <url-pattern>/GIM_light/greet</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>orderRepositoryServlet</servlet-name>
+    <servlet-class>com.syncron.server.OrderRepository</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>orderRepositoryServlet</servlet-name>
+    <url-pattern>/GIM_light/orderRepository</url-pattern>
   </servlet-mapping>
   
   <!-- Default page to serve -->
