@@ -51,9 +51,9 @@ public class PropertyObjectGenerator2 {
 			writer.println("");
 			generateFieldNames(writer);
 			writer.println("");
-			generate1(writer);
+			generateActions(writer);
 			writer.println("");
-			generate2(writer);
+			generateAction(writer);
 		writer.outdent();
 		writer.println("}");
 		
@@ -61,35 +61,38 @@ public class PropertyObjectGenerator2 {
 	}
 
 
-	private void generate2(SourceWriter writer) {
+	private void generateAction(SourceWriter writer) {
 		writer.println("@Override public void action(String actionName) {");
 		writer.indent();
 		
-//		writer.println("if (\"actionName)
-//		if ("confirm".equals(actionName)) {
-//			object.confirm();
-//			return;
-//		}
-
+		for (String actionName : getActionNames()) {
+			writer.println("if (\"" + actionName + "\".equals(actionName)) {");
+			writer.indent();
+				writer.println("object." + actionName + "();");
+				writer.println("return;");
+			writer.outdent();
+			writer.println("}");
+		}
+			
 		writer.println("throw new IllegalArgumentException();");
 		writer.outdent();
 		writer.println("}");
 		
 	}
 
-	private void generate1(SourceWriter writer) {
+	private void generateActions(SourceWriter writer) {
 		writer.println("@Override public List<String> actions() {");
 		writer.indent();
 		
 		writer.print("return Arrays.asList(");
-		Iterator<String> iterator = getActionNames(writer).iterator();
+		Iterator<String> iterator = getActionNames().iterator();
 		writer.printList(iterator);
 		writer.println(");");
 		writer.outdent();
 		writer.println("}");
 	}
 
-	private Iterable<String> getActionNames(SourceWriter writer) {
+	private Iterable<String> getActionNames() {
 		Method[] methods = type.getDeclaredMethods();
 		List<String> actions = new ArrayList<String>();
 		
