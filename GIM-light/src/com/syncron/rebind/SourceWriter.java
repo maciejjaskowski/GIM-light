@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Iterator;
 
-public class SourceWriter {
+class SourceWriter {
 
 	private String str = "";
 	private String indent = "";

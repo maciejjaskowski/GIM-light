@@ -3,6 +3,7 @@ package com.syncron.rebind;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -22,13 +23,13 @@ public class PropertyObjectGenerator2 {
 	private final Class<?> type;
 	private final String result;
 
-	public PropertyObjectGenerator2(String typeName) throws ClassNotFoundException {
-		this(Class.forName(typeName));
+	public PropertyObjectGenerator2(String typeName, String suffix) throws ClassNotFoundException {
+		this(Class.forName(typeName), suffix);
 	}
 	
-	public PropertyObjectGenerator2(Class<?> type) {
+	public PropertyObjectGenerator2(Class<?> type, String suffix) {
 		this.type = type;
-		this.typeName = type.getSimpleName() + "$Properties";
+		this.typeName = type.getSimpleName() + suffix;
 		this.packageName = type.getPackage().getName();
 			// Generate class source code
 		this.result = generateClass();
@@ -180,34 +181,51 @@ public class PropertyObjectGenerator2 {
 	}
 	
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
-		File dir = new File("src/com/syncron/shared/");
-		System.out.println(Arrays.toString(dir.list()));
-		System.out.println(dir.getAbsolutePath());
+		File dirToLookForClasses = new File("src/com/syncron/shared/");
+		final String suffix = "$Properties";
 		
-		ArrayList<Class<?>> names = new ArrayList<Class<?>>(); 
-		for (String fileName : dir.list()) {
-			File file = new File(dir + "/" + fileName);
-			
-			BufferedReader fileReader = new BufferedReader(new FileReader(file));
-			String line = "";
-			while((line = fileReader.readLine()) != null) {
-				if (line.contains("implements Model")) {
-					String string = "com.syncron.shared." + fileName.substring(0, fileName.length() - 5);
-					Class<?> type = Class.forName(string);
-					names.add(type);
-					System.out.println(type.getCanonicalName());
-					break;
-				}
-			}
-		}
+		System.out.println("I'm here: " + dirToLookForClasses.getAbsolutePath());
+		System.out.println("I'm going to filter these: " + Arrays.toString(dirToLookForClasses.list()));
+		
+		ArrayList<Class<?>> names = findClasses(dirToLookForClasses);
 		
 		for (Class<?> type : names) {
-			PropertyObjectGenerator2 generator = new PropertyObjectGenerator2(type);
-			FileWriter fileWriter = new FileWriter(new File(dir.getAbsolutePath() + "/" + type.getSimpleName() + "$Properties.java"));
+			PropertyObjectGenerator2 generator = new PropertyObjectGenerator2(type, suffix);
+			String newClassPath = dirToLookForClasses.getAbsolutePath() + "/" + type.getSimpleName() + suffix + ".java";
+			System.out.println(newClassPath);
+			FileWriter fileWriter = new FileWriter(new File(newClassPath));
 			fileWriter.write(generator.getResult());
 			fileWriter.close();
 		}
-		
+	}
+
+	private static ArrayList<Class<?>> findClasses(File dirToLookForClasses)
+			throws FileNotFoundException, IOException, ClassNotFoundException {
+		ArrayList<Class<?>> names = new ArrayList<Class<?>>(); 
+		for (String fileName : dirToLookForClasses.list()) {
+			File file = new File(dirToLookForClasses + "/" + fileName);
+			
+			if ( ! file.isFile()) { continue; }
+			
+			if (implementsModel(file)) {
+				String className = "com.syncron.shared." + fileName.substring(0, fileName.length() - 5);
+				names.add(Class.forName(className));
+			}
+		}
+		return names;
+	}
+
+	private static boolean implementsModel(
+			File file) throws IOException,
+			ClassNotFoundException {
+		BufferedReader fileReader = new BufferedReader(new FileReader(file));
+		String line = "";
+		while((line = fileReader.readLine()) != null) {
+			if (line.contains("implements Model")) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }
