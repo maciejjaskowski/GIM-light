@@ -106,16 +106,8 @@ public class View implements IsWidget {
 			if (properties.get(fieldName) instanceof Collection){
 				dialogContents.add(new EmbeddedListView(fieldName, (Collection<?>) properties.get(fieldName)));
 			} else {
-				Label label = new Label(fieldName + ": ");
-				
-				TextBox textBox = new TextBox();
-				textBox.setText(properties.get(fieldName).toString());
-				textBox.setEnabled(true);
-				textBox.setReadOnly(true);
-				HorizontalPanel horizontalPanel = new HorizontalPanel();
-				horizontalPanel.add(label);
-				horizontalPanel.add(textBox);
-				dialogContents.add(horizontalPanel); 
+				Label label = new Label(fieldName + ": " + properties.get(fieldName));
+				dialogContents.add(label); 
 			}
 		}
 	}
