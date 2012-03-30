@@ -11,20 +11,15 @@ import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.syncron.shared.HandlesChange;
 import com.syncron.shared.Model;
-import com.syncron.shared.Order;
-import com.syncron.shared.Order$Properties;
-import com.syncron.shared.OrderLine;
-import com.syncron.shared.OrderLine$Properties;
 import com.syncron.shared.ReflectsObject;
 
-public class View implements IsWidget {
+public class View implements IsWidget, HandlesChange {
 
 	Object object;
 	DialogBox dialogBox;
@@ -44,15 +39,21 @@ public class View implements IsWidget {
 		dialogBox.setModal(false);
 		dialogBox.setAnimationEnabled(true);
 
+		dialogBox.setWidget(createContent());
+
+		// Return the dialog box
+		return dialogBox;
+	}
+
+	private VerticalPanel createContent() {
 		// Create a table to layout the content
 		VerticalPanel dialogContents = new VerticalPanel();
 		dialogContents.setSpacing(4);
-		dialogBox.setWidget(dialogContents);
 
 		// Add some text to the top of the dialog
 
-		createContent(dialogContents);
-		
+		renderFields(dialogContents);
+
 		createActions(dialogContents);
 
 
@@ -79,15 +80,15 @@ public class View implements IsWidget {
 					closeButton, HasHorizontalAlignment.ALIGN_RIGHT);
 		}
 
-		// Return the dialog box
-		return dialogBox;
+		return dialogContents;
 	}
 
-	private void createContent(VerticalPanel dialogContents) {
+	private void renderFields(VerticalPanel dialogContents) {
 		try {
 			if (object instanceof Model) {
 				ReflectsObject properties = ((Model) object).getProperties();
-				addPropertiesTo(dialogContents, properties);				
+				properties.addEventTarget(this);
+				addPropertiesTo(dialogContents, properties);
 			} else {
 				Label label = new Label(object.getClass().getName() + ": " + object.toString());
 				dialogContents.add(label);
@@ -105,15 +106,15 @@ public class View implements IsWidget {
 				dialogContents.add(new EmbeddedListView(fieldName, (Collection<?>) properties.get(fieldName)));
 			} else {
 				Label label = new Label(fieldName + ": " + properties.get(fieldName));
-				dialogContents.add(label); 
+				dialogContents.add(label);
 			}
 		}
 	}
-	
+
 	private void createActions(VerticalPanel dialogContents) {
 		if (object instanceof Model) {
 			final ReflectsObject properties = ((Model) object).getProperties();
-			
+
 			for (final String actionName : properties.actions()) {
 				Button action = new Button(actionName, new ClickHandler() {
 					public void onClick(ClickEvent event) {
@@ -122,10 +123,10 @@ public class View implements IsWidget {
 				});
 				dialogContents.add(action);
 			}
-			
+
 		} else {
 		}
-		
+
 	}
 
 	@Override
@@ -137,7 +138,7 @@ public class View implements IsWidget {
 		dialogBox.center();
 		dialogBox.show();
 	}
-	
+
 	class ClosableDialogBox extends DialogBox {
 		@Override
 	    protected void onPreviewNativeEvent(NativePreviewEvent event) {
@@ -150,6 +151,12 @@ public class View implements IsWidget {
 	                break;
 	        }
 	    }
+	}
+
+	@Override
+	public void handleChange() {
+		dialogBox.clear();
+		dialogBox.setWidget(createContent());
 	}
 
 }

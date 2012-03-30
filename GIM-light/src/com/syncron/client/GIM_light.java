@@ -37,9 +37,9 @@ public class GIM_light implements EntryPoint {
 	 */
 	private final GreetingServiceAsync greetingService = GWT
 			.create(GreetingService.class);
-	
+
 	private final OrderRepositoryAsync orderRepository = GWT.create(OrderRepository.class);
-	
+
 
 	private DialogBox createDialogBox() {
 		// Create a dialog box and set the caption text
@@ -112,28 +112,29 @@ public class GIM_light implements EntryPoint {
 			}
 
 		});
-		
+
 		Button unconfirmedOrder =  new Button("unconfirmed order",  new ClickHandler() {
 
 			@Override
 			public void onClick(ClickEvent event) {
 				orderRepository.unconfirmed(new AsyncCallback<Order>() {
-					
+
 					@Override
 					public void onSuccess(Order result) {
+						System.out.println(result.status);
 						new View(result).show();
 					}
-					
+
 					@Override
 					public void onFailure(Throwable caught) {
 						//ignore
 					}
 				});
-				
+
 			}
 
 		});
-		
+
 		RootPanel.get().add(anOrder);
 		RootPanel.get().add(unconfirmedOrder);
 
@@ -239,6 +240,6 @@ public class GIM_light implements EntryPoint {
 	private Order someOrder() {
 		return Order.specialOrder();
 	}
-	
-	
+
+
 }

@@ -12,4 +12,6 @@ public interface ReflectsObject {
 
 	public void action(String actionName);
 
+	public void addEventTarget(HandlesChange view);
+
 }

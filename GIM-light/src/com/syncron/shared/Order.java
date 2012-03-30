@@ -19,9 +19,9 @@ public class Order implements Model {
 	String number;
 	Date date;
 	Address buyerAddress;
-	Status status;
+	public Status status;
 	List<OrderLine> lines;
-	
+
 	private Order() { }
 
 	@Deprecated
@@ -34,24 +34,25 @@ public class Order implements Model {
 		this.status = status;
 		this.lines = Arrays.asList(lines);
 	}
-	
+
 	public boolean is(Status status) {
-		return this.status == status; 
+		return this.status == status;
 	}
-	
+
 	@Action
 	public void confirm() {
+		Status oldStatus = status;
 		this.status = CONFIRMED;
 	}
 
-	public static Order specialOrder() {		
+	public static Order specialOrder() {
 		Order order = new Order("1", new Date(),
-				new Address("Świętokrzyska 36/36-37"), Status.NEW, 
+				new Address("Świętokrzyska 36/36-37"), Status.NEW,
 				new OrderLine(new Item("Beamrail Gauss Cannon"), new BigDecimal("15.20"), 1));
 		return order;
 	}
-	
-	public static List<Order> orders() {		
+
+	public static List<Order> orders() {
 		Order[] orders = new Order[] {
 		Order.create("1").at(new Date()).to(new Address("Świętokrzyska 36/36-37"))
 			.is(NEW)
@@ -97,7 +98,7 @@ public class Order implements Model {
 		}
 
 		public OrderBuilder is(Status status) {
-			builded.status = status; 
+			builded.status = status;
 			return this;
 		}
 
@@ -110,17 +111,20 @@ public class Order implements Model {
 			builded.date = date;
 			return this;
 		}
-		
+
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.number;
 	}
-	
+
 	@Override
 	public ReflectsObject getProperties() {
-		return new Order$Properties(this);
+		if (SingletonHolder.order == null) {
+			SingletonHolder.order = new Order$Properties(this);
+		}
+		return SingletonHolder.order;
 	}
 
 }
